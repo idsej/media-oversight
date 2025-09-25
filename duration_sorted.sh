@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# This script finds all .mkv files, sorts them by duration,
+# This script finds all .mkv and .mp4 files, sorts them by duration,
 # saves filename and duration to a csv file.
 # Requires ffmpeg
 
-OUTPUT_FILE="mkv_lengths_sorted.csv"
+OUTPUT_FILE="duration_sorted.csv"
 total_seconds=0
 file_count=0
 data_to_sort=""
