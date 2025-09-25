@@ -43,9 +43,10 @@ echo "Done. Processed $file_count file(s)."
 echo "Sorted data saved to $OUTPUT_FILE"
 
 if (( $(echo "$total_seconds > 0" | bc -l) )); then
-    total_seconds_int=${total_seconds%.*}
-    hours=$((total_seconds_int / 3600))
-    minutes=$(( (total_seconds_int % 3600) / 60 ))
-    seconds=$((total_seconds_int % 60))
-    printf "Total Duration: %02d:%02d:%02d\n" $hours $minutes $seconds
+    total_seconds_rounded=$(printf "%.0f" "$total_seconds")
+
+    hours=$((total_seconds_rounded / 3600))
+    minutes=$(( (total_seconds_rounded % 3600) / 60 ))
+
+    printf "Total Duration: %d Hours, %d Minutes\n" $hours $minutes
 fi
