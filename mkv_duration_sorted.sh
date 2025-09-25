@@ -9,7 +9,7 @@ total_seconds=0
 file_count=0
 data_to_sort=""
 
-echo "FileName,DurationSeconds,DurationMinutes" > "$OUTPUT_FILE"
+echo "FileName,DurationMinutes" > "$OUTPUT_FILE"
 
 echo "Scanning files..."
 
@@ -24,7 +24,7 @@ while IFS= read -r -d '' file; do
     else
         echo "Warning: Could not get duration for: $file"
     fi
-done < <(find . -path './$RECYCLE.BIN' -prune -o -path './System Volume Information' -prune -o -type f -iname "*.mkv" -print0)
+done < <(find . -path './$RECYCLE.BIN' -prune -o -path './System Volume Information' -prune -o -type f \( -iname "*.mkv" -o -iname "*.mp4" \) -print0)
 
 # sort and write
 if [[ -n "$data_to_sort" ]]; then
@@ -32,13 +32,12 @@ if [[ -n "$data_to_sort" ]]; then
     printf "%s" "$data_to_sort" | sort -rn | while IFS=$'\t' read -r duration file; do
         if [[ -n "$file" ]]; then
             filename_only="${file##*/}"
-
-            minutes=$(echo "scale=2; $duration / 60" | bc)
-            echo "\"$filename_only\",$duration,$minutes" >> "$OUTPUT_FILE"
+            precise_minutes=$(echo "scale=4; $duration / 60" | bc)
+            rounded_minutes=$(printf "%.0f" "$precise_minutes")
+            echo "\"$filename_only\",$rounded_minutes" >> "$OUTPUT_FILE"
         fi
     done
 fi
-
 echo "--------------------------------------------------"
 echo "Done. Processed $file_count file(s)."
 echo "Sorted data saved to $OUTPUT_FILE"
